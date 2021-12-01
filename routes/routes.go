@@ -1,9 +1,9 @@
 package routes
 
 import (
+	"bluebell/logger"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"web/tongyong/logger"
 )
 
 func Setup() *gin.Engine {

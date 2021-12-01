@@ -1,6 +1,12 @@
 package main
 
 import (
+	"bluebell/dao/mysql"
+	"bluebell/dao/redis"
+	"bluebell/logger"
+	"bluebell/pkg/snowflake"
+	"bluebell/routes"
+	"bluebell/setting"
 	"context"
 	"fmt"
 	"github.com/spf13/viper"
@@ -11,11 +17,6 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
-	"web/tongyong/dao/mysql"
-	"web/tongyong/dao/redis"
-	"web/tongyong/logger"
-	"web/tongyong/routes"
-	"web/tongyong/setting"
 )
 
 func main() {
@@ -38,6 +39,9 @@ func main() {
 		fmt.Printf("init redis failed,err: %v \n", err)
 	}
 	defer redis.Close()
+	if err := snowflake.Init(setting.Conf.StartTime, setting.Conf.MachineID); err != nil {
+		fmt.Printf("init redis failed,err: %v \n", err)
+	}
 	r := routes.Setup()
 	r.Run()
 	srv := &http.Server{
