@@ -47,19 +47,21 @@ type LogConfig struct {
 	MaxBackups int    `mapstructure:"max_backups"`
 }
 
-func Init(fileName string) (err error) {
-	//viper.SetConfigName("config")
-	//viper.SetConfigType("yaml")
-	//viper.AddConfigPath(".")
-	viper.SetConfigName("./conf/config.yaml")
-	err = viper.ReadInConfig()
-	if err != nil {
-		fmt.Printf("viper.ReadInConfig err:%v", err)
-		return
-	}
+func Init() error {
+	viper.SetConfigFile("./conf/config.yaml")
+
 	viper.WatchConfig()
 	viper.OnConfigChange(func(in fsnotify.Event) {
-		fmt.Println("配置文件修改了")
+		fmt.Println("夭寿啦~配置文件被人修改啦...")
+		viper.Unmarshal(&Conf)
 	})
-	return
+
+	err := viper.ReadInConfig()
+	if err != nil {
+		panic(fmt.Errorf("ReadInConfig failed, err: %v", err))
+	}
+	if err := viper.Unmarshal(&Conf); err != nil {
+		panic(fmt.Errorf("unmarshal to Conf failed, err:%v", err))
+	}
+	return err
 }
