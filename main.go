@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bluebell/controllers"
 	"bluebell/dao/mysql"
 	"bluebell/dao/redis"
 	"bluebell/logger"
@@ -24,7 +25,7 @@ func main() {
 	if err := setting.Init(); err != nil {
 		fmt.Printf("init setting failed,err: %v \n", err)
 	}
-	if err := logger.Init(); err != nil {
+	if err := logger.Init(setting.Conf.LogConfig, setting.Conf.Mode); err != nil {
 		fmt.Printf("init logger failed,err: %v \n", err)
 	}
 	defer zap.L().Sync()
@@ -39,7 +40,10 @@ func main() {
 	if err := snowflake.Init(setting.Conf.StartTime, setting.Conf.MachineID); err != nil {
 		fmt.Printf("init redis failed,err: %v \n", err)
 	}
-	r := routes.Setup()
+	if err := controllers.InitTrans("zh"); err != nil {
+		fmt.Printf("init InitTrans failed,err: %v \n", err)
+	}
+	r := routes.SetupRouter()
 	r.Run()
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%d", viper.GetInt("app.port")),

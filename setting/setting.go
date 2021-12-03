@@ -11,10 +11,9 @@ var Conf = new(AppConfig)
 type AppConfig struct {
 	Mode         string `mapstructure:"mode"`
 	Port         int    `mapstructure:"port"`
-	Name         string `mapstructure:"port"`
 	Version      string `mapstructure:"version"`
 	StartTime    string `mapstructure:"start_time"`
-	MachineID    int64  `mapstructure:"port"`
+	MachineID    int64  `mapstructure:"machin_id"`
 	*LogConfig   `mapstructure:"log"`
 	*MySQLConfig `mapstructure:"mysql"`
 	*RedisConfig `mapstructure:"redis"`
@@ -24,7 +23,7 @@ type MySQLConfig struct {
 	Host         string `mapstructure:"host"`
 	User         string `mapstructure:"user"`
 	Password     string `mapstructure:"password"`
-	DB           string `mapstructure:"db"`
+	DB           string `mapstructure:"dbname"`
 	Port         int    `mapstructure:"port"`
 	MaxOpenConns int    `mapstructure:"max_open_conns"`
 	MaxIdleConns int    `mapstructure:"max_idle_conns"`
@@ -53,15 +52,19 @@ func Init() error {
 	viper.WatchConfig()
 	viper.OnConfigChange(func(in fsnotify.Event) {
 		fmt.Println("夭寿啦~配置文件被人修改啦...")
-		viper.Unmarshal(&Conf)
+		err := viper.Unmarshal(Conf)
+		if err != nil {
+
+		}
 	})
 
 	err := viper.ReadInConfig()
 	if err != nil {
 		panic(fmt.Errorf("ReadInConfig failed, err: %v", err))
 	}
-	if err := viper.Unmarshal(&Conf); err != nil {
+	if err = viper.Unmarshal(&Conf); err != nil {
 		panic(fmt.Errorf("unmarshal to Conf failed, err:%v", err))
+
 	}
 	return err
 }
