@@ -52,5 +52,27 @@ func GetPostList(c *gin.Context) {
 		ResponseError(c, CodeServerBusy)
 		return
 	}
+
+	ResponseSuccess(c, data)
+}
+func GetPostList2(c *gin.Context) {
+	p := &models.ParmaPostList{
+		PageNum:  1,
+		PageSize: 10,
+		Order:    models.OrderTime,
+	}
+	if err := c.ShouldBindQuery(p); err != nil {
+		zap.L().Error("GetPostList2 with Invalid Parma", zap.Error(err))
+		ResponseError(c, CodeInvalidParams)
+		return
+	}
+
+	data, err := logic.GetPostList2(p)
+	if err != nil {
+		zap.L().Error("logic.GetPostList error", zap.Error(err))
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+
 	ResponseSuccess(c, data)
 }

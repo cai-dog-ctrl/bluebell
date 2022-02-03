@@ -21,6 +21,8 @@ func SetupRouter() *gin.Engine {
 		v2.POST("/post", controllers.CreatPost)
 		v2.GET("/post/:id", controllers.GetPostById)
 		v2.GET("/posts", controllers.GetPostList)
+		v2.GET("/posts2", controllers.GetPostList2)
+		v2.POST("/vote", controllers.PostVoteControllers)
 	}
 	r.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{

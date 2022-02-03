@@ -29,11 +29,11 @@ func GetPageSizeAndPageNum(c *gin.Context) (pageSize int64, pageNum int64) {
 	pageNumStr := c.Query("num")
 	pageSize, err := strconv.ParseInt(pageSizeStr, 10, 64)
 	if err != nil {
-		pageSize = 0
+		pageSize = 10
 	}
 	pageNum, err = strconv.ParseInt(pageNumStr, 10, 64)
 	if err != nil {
-		pageNum = 0
+		pageNum = 1
 	}
 	return
 }

@@ -12,6 +12,11 @@ type Post struct {
 	CreateTime  time.Time `json:"-" db:"create_time"`
 }
 
+const (
+	OrderTime  = "time"
+	OrderScore = "score"
+)
+
 type ApiPost struct {
 	AuthorName       string `json:"author_name"`
 	*Post            `json:"*_post"`

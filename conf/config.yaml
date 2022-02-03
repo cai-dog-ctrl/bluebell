@@ -23,7 +23,7 @@ redis:
   port: 7963
   db: 0
   password: 123654
-  pool_size:
+  pool_size: 2
 
 auth:
   jwt_expire: 8760

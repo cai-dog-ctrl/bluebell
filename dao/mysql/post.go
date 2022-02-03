@@ -1,6 +1,11 @@
 package mysql
 
-import "bluebell/models"
+import (
+	"bluebell/models"
+	"fmt"
+	"github.com/jmoiron/sqlx"
+	"strings"
+)
 
 func CreatePost(post *models.Post) error {
 	sqlStr := "insert into post (post_id, title, content, author_id, community_id) VALUES (?,?,?,?,?)"
@@ -24,7 +29,19 @@ func GetUserByID(Id int64) (username string, err error) {
 
 func GetPostList(pageSize, pageNum int64) (data []*models.Post, err error) {
 	data = make([]*models.Post, 0, 2)
-	sqlStr := " select post_id,title,content,author_id,community_id,create_time from post limit ?,?"
+	sqlStr := " select post_id,title,content,author_id,community_id,create_time from post order by create_time desc  limit ?,?"
 	err = db.Select(&data, sqlStr, (pageNum-1)*pageSize, pageSize)
+	fmt.Println((pageNum-1)*pageSize, pageSize)
+	return
+}
+func GetPostList2(ids []string) (posts []*models.Post, err error) {
+	sqlStr := "select post_id,title,content,author_id,community_id,create_time from post where post.post_id in (?) order by find_in_set(post_id,?)"
+	query, args, err := sqlx.In(sqlStr, ids, strings.Join(ids, ","))
+	if err != nil {
+		return nil, err
+	}
+	query = db.Rebind(query)
+	err = db.Select(&posts, query, args...)
+	fmt.Println(query)
 	return
 }
